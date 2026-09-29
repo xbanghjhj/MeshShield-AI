@@ -2,7 +2,7 @@
 .PHONY: fmt lint test build verify
 
 fmt:
->gofmt -w cmd internal
+>gofmt -w cmd
 
 lint:
 >go vet ./...
