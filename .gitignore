@@ -1,0 +1,16 @@
+/bin/
+/dist/
+/private/
+*.key
+*.pem
+.env
+.env.*
+!.env.example
+*.tfstate
+*.tfstate.*
+**/.terraform/
+*.tfvars
+*.tfvars.json
+*.pcap
+*.pcapng
+coverage.out
