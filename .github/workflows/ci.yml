@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [day-1-foundation]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
+        with:
+          go-version-file: go.mod
+          cache: false
+
+      - name: Check Go format
+        run: |
+          files="$(gofmt -l cmd)"
+          if [ -n "$files" ]; then
+            printf 'Go files need gofmt:\n%s\n' "$files"
+            exit 1
+          fi
+
+      - name: Go vet
+        run: go vet ./...
+
+      - name: Go test
+        run: go test ./...
+
+      - name: Build agent
+        run: go build -trimpath -o bin/meshshield-agent ./cmd/meshshield-agent
+
+      - name: Build controller
+        run: go build -trimpath -o bin/meshshield-controller ./cmd/meshshield-controller
